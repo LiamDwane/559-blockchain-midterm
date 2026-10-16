@@ -42,4 +42,4 @@ truffle migrate --reset
 ### 3. Running the Frontend
 1. Open `index.html` in VS Code
 2. Select open with live server
-3. Ensure MetaMask is connected to the site to interact with the smart contracts.
+3. Ensure MetaMask wallet is connected to the site to interact with the smart contracts. Each account is currently limited to a single zombie. You can play by using the Create Zombie and Level Up buttons. When you click Create Zombie, the interface will display your zombie's stats: Name (which defaults to your wallet address), DNA, level, wins, losses, and ready time. After upgrading, simply click Show Zombie to refresh the screen and view your zombie's new level.
