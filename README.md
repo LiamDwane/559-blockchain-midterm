@@ -12,12 +12,9 @@ This is a web3 demo project for the CPSC 559 course at California State Universi
 
 ## Improvements Made
 We made it much easier to deploy and run the app by completely automating how the blockchain connects to the frontend:
-* **No Need to Copy-Paste Address:** We updated our deployment script, so that every time we deploy our smart contracts, the new contract address and ABI are automatically saved directly into our frontend file.
-* **Cleaner Code:** We removed the hard-coded contract address. The website now automatically reads the correct address from our generated file.
-* **No GitHub Conflicts:** We added `cryptozombies_abi.js` to our `.gitignore` file. Because everyone gets a different local address when they run Ganache on their own computers, this prevents us from accidentally overwriting each other's setups when saving to GitHub.
-
-## Submission Package Contents
-* **Source Code:** Available in this repository
+* We updated our deployment script, so that every time we deploy our smart contracts, the new contract address and ABI are automatically saved directly into our frontend file.
+* We removed the hard-coded contract address. The website now automatically reads the correct address from our generated file.
+* We added `cryptozombies_abi.js` to our `.gitignore` file. Because everyone gets a different local address when they run Ganache on their own computers, this prevents us from accidentally overwriting each other's setups when saving to GitHub.
 
 ---
 
