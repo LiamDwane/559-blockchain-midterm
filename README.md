@@ -36,7 +36,7 @@ truffle migrate --reset
 ```
 
 ### 2. MetaMask Configuration
-1. Open MetaMask and ensure your Localhost network RPC URL matches Ganache: `HTTP://127.0.0.1:7545` (Chain ID: 5777)
+1. Open MetaMask and add a custom network. Ensure default network RPC URL matches Ganache: `HTTP://127.0.0.1:7545`, Chain ID: 5777, and currency symbol: ETH.
 2. Import a test account from Ganache using its private key.
 
 ### 3. Running the Frontend
