@@ -1,2 +1,5 @@
 build/
 .env
+
+# Ignore the auto-generated ABI file so our group doesn't overwrite each other's local Ganache addresses
+cryptozombies_abi.js
