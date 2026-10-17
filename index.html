@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>CryptoZombies front-end</title>
+<link rel="stylesheet" href="style.css">
 <link rel="icon" href="favicon.ico">
   <script language="javascript" type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -13,7 +14,10 @@
 </head>
 
 <body>
-  <div id="txStatus"></div>
+  <h1>CryptoZombies Demo Project</h1>
+  <div class="subtitle">Demo web3 project using the CryptoZombies demo package</div>
+  
+  <div id="txStatus"><i>System status messages appear here.</i></div>
   <div id="zombies"></div>
 
   <button class="showZombieButton">Show Zombies</button>
@@ -43,26 +47,170 @@
 
     function displayZombies(ids) {
       $("#zombies").empty();
+      if (ids.length === 0) {
+        $("#zombies").html("<p style='color: var(--text-muted);'>No zombies found for this account.</p>");
+        return;
+      }
       for (id of ids) {
-
         getZombieDetails(id)
           .then(function (zombie) {
+            let backLegColor = getPartColor(zombie.dna, 0, legBackCoefficients);
+            let backArmColor = getPartColor(zombie.dna, 2, armCoefficients);
+            let torsoColor = getPartColor(zombie.dna, 4, torsoCoefficients);
+            let frontLegColor = getPartColor(zombie.dna, 6, legBackCoefficients);
+            let frontArmColor = getPartColor(zombie.dna, 8, armCoefficients);
+            let headColor = getPartColor(zombie.dna, 10, headCoefficients);
 
-
-            $("#zombies").append(`<div class="zombie">
+           $("#zombies").append(`<div class="zombie">
               <ul>
-                <li>Name: ${zombie.name}</li>
-                <li>DNA: ${zombie.dna}</li>
-                <li>Level: ${zombie.level}</li>
-                <li>Wins: ${zombie.winCount}</li>
-                <li>Losses: ${zombie.lossCount}</li>
-                <li>Ready Time: ${zombie.readyTime}</li>
+                <li><strong>Name:</strong> ${zombie.name}</li>
+                <li><strong>DNA:</strong> ${zombie.dna}</li>
+                <li><strong>Level:</strong> ${zombie.level}</li>
+                <li><strong>Wins:</strong> ${zombie.winCount}</li>
+                <li><strong>Losses:</strong> ${zombie.lossCount}</li>
+                <li><strong>Ready Time:</strong> ${zombie.readyTime}</li>
               </ul>
+              <div class="zombie-sprite-container">
+                <canvas id="zombie-canvas-${id}" width="64" height="64"></canvas>
+              </div>
             </div>`);
+            drawZombieCanvas(id, {
+              backLeg: backLegColor,
+              backArm: backArmColor,
+              torso: torsoColor,
+              frontLeg: frontLegColor,
+              frontArm: frontArmColor,
+              head: headColor
+            });
           });
       }
-
     }
+
+    function cosineGradient(t, a, b, c, d) {
+      let r = a[0] + b[0] * Math.cos(6.28318 * (c[0] * t + d[0]));
+      let g = a[1] + b[1] * Math.cos(6.28318 * (c[1] * t + d[1]));
+      let blue = a[2] + b[2] * Math.cos(6.28318 * (c[2] * t + d[2]));
+
+      let redInt = Math.min(255, Math.max(0, Math.floor(r * 255)));
+      let greenInt = Math.min(255, Math.max(0, Math.floor(g * 255)));
+      let blueInt = Math.min(255, Math.max(0, Math.floor(blue * 255)));
+
+      return `rgb(${redInt}, ${greenInt}, ${blueInt})`;
+    }
+
+    let legBackCoefficients = [
+      [0.5, 0.5, 0.3],
+      [0.4, 0.4, 0.1],
+      [1, 1, 1],
+      [0.0, 0.3, 0.5],
+    ];
+
+    let torsoCoefficients = [
+      [0.3, 0.3, 0.2],
+      [0.3, 0.3, 0.2],
+      [1, 1.5, .7],
+      [0.25, 0.5, 0.75],
+    ];
+
+    let armCoefficients = [
+      [0.4, 0.5, 0.4],
+      [0.3, 0.3, 0.2],
+      [1.3, 1.2, .6],
+      [0.0, 0.33, 0.67],
+    ];
+
+    let headCoefficients = [
+      [0.5, 0.7, 0.3],
+      [0.7, 0.7, 0.4],
+      [3, 5, 1],
+      [0.1, 0.6, 0.9],
+    ];
+
+    function getPartColor(dna, digitOffset, partCoefficients) {
+      const divisor = 10n ** BigInt(digitOffset);
+      const numericDna = Number((BigInt(dna) / divisor) % 100n);
+      return cosineGradient(numericDna / 100, ...partCoefficients);
+    }
+
+    const spriteSources = {
+      legBack: 'assets/559_Zombie_BW_Back_Leg.png',
+      armBack: 'assets/559_Zombie_BW_Back_Arm.png',
+      torso: 'assets/559_Zombie_BW_Torso.png',
+      legFront: 'assets/559_Zombie_BW_Front_Leg.png',
+      armFront: 'assets/559_Zombie_BW_Front_Arm.png',
+      head: 'assets/559_Zombie_BW_Head.png'
+    };
+
+    const loadedSprites = {};
+    let imagesLoaded = 0;
+    const totalImages = Object.keys(spriteSources).length;
+
+    for (let key in spriteSources) {
+      let img = new Image();
+      img.src = spriteSources[key];
+      img.onload = () => {
+        imagesLoaded++;
+      };
+      loadedSprites[key] = img;
+    }
+      
+    function drawZombieCanvas(zombieId, colors) {
+      const canvas = document.getElementById(`zombie-canvas-${zombieId}`);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+
+      const frameWidth = 64, frameHeight = 64, totalFrames = 7;
+      let currentFrame = 0, lastFrameTime = 0;
+
+      const layers = [
+        { img: loadedSprites.legBack,  color: colors.backLeg },
+        { img: loadedSprites.armBack,  color: colors.backArm },
+        { img: loadedSprites.torso,    color: colors.torso },
+        { img: loadedSprites.legFront, color: colors.frontLeg },
+        { img: loadedSprites.armFront, color: colors.frontArm },
+        { img: loadedSprites.head,     color: colors.head }
+      ];
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = frameWidth;
+      tempCanvas.height = frameHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      function animate(timestamp) {
+        if (!canvas.isConnected) return;
+        if (imagesLoaded < totalImages) {
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const sx = currentFrame * frameWidth;
+
+        for (const layer of layers) {
+          tempCtx.globalCompositeOperation = 'source-over';
+          tempCtx.clearRect(0, 0, frameWidth, frameHeight);
+
+          tempCtx.drawImage(layer.img, sx, 0, frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
+
+          tempCtx.globalCompositeOperation = 'multiply';
+          tempCtx.fillStyle = layer.color;
+          tempCtx.fillRect(0, 0, frameWidth, frameHeight);
+
+          tempCtx.globalCompositeOperation = 'destination-in';
+          tempCtx.drawImage(layer.img, sx, 0, frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
+
+          ctx.drawImage(tempCanvas, 0, 0);
+        }
+
+        if (!lastFrameTime || timestamp - lastFrameTime > 167) {
+          currentFrame = (currentFrame + 1) % totalFrames;
+          lastFrameTime = timestamp;
+        }
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    }    
 
     function createRandomZombie(name) {
 
