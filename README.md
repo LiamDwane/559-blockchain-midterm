@@ -1,7 +1,9 @@
 # CryptoZombies DApp - CPSC 559 Midterm Project
 
 This is a web3 demo project for the CPSC 559 course at California State University Fullerton, starting from the CryptoZombies demo package. This project demonstrates blockchain development and web3 integration with standard HTML, JS, and CSS front end.
-<img width="856" height="829" alt="HTML Page with Zombie Walking" src="https://github.com/user-attachments/assets/35b616a2-27ea-48f1-acbc-d56b40b425a7" />
+<div align="center">
+  <img width="856" height="829" alt="HTML Page with Zombie Walking" src="https://github.com/user-attachments/assets/35b616a2-27ea-48f1-acbc-d56b40b425a7" />
+</div>
 
 **GitHub Respository:** 
 
