@@ -7,7 +7,7 @@ This is a web3 demo project for the CPSC 559 course at California State Universi
 ## Team Members
 * **Name:** Liam Dwane | **CWID:** | **Email:**
 * **Name:** Noemi Pantoja Morales | **CWID:** 888595816 | **Email:** noemi_900@csu.fullerton.edu
-* **Name:** Jasmine Rodriguez | **CWID:** | **Email:**
+* **Name:** Jasmine Rodriguez | **CWID:** 888470812 | **Email:** lpdwane@csu.fullerton.edu
 * **Name:** Ammar Mohiuddin | **CWID:** 882421753| **Email:** Mohiuddin2004@csu.fullerton.edu
 
 ## Improvements Made
