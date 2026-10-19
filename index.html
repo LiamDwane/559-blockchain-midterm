@@ -212,22 +212,53 @@
       requestAnimationFrame(animate);
     }    
 
-    function createRandomZombie(name) {
+    // Friendly status updates for creating a zombie.
+    let zombieCreationPending = false;
 
+    async function createRandomZombie(name) {
+      if (zombieCreationPending) return;
+      if (!cryptoZombies || !userAccount) {
+        $("#txStatus").text("Connect MetaMask to your Ganache network first.");
+        return;
+      }
 
-      $("#txStatus").text("Creating new zombie on the blockchain. This may take a while...");
+      zombieCreationPending = true;
+      createzombieButton.disabled = true;
+      try {
+        $("#txStatus").text("Checking whether your account already has a zombie...");
+        const ownedIds = await getZombiesByOwner(userAccount);
+        if (ownedIds.length > 0) {
+          $("#txStatus").text("You already own a zombie! Each wallet can create only one starter zombie. Use Show Zombies to view yours.");
+          return;
+        }
 
-      return cryptoZombies.methods.createRandomZombie(name)
-        .send({ from: userAccount })
-        .on("receipt", function (receipt) {
-          $("#txStatus").text("Successfully created " + name + "!");
+        $("#txStatus").text("Please confirm zombie creation in MetaMask...");
+        const receipt = await cryptoZombies.methods.createRandomZombie(name)
+          .send({ from: userAccount })
+          .on("transactionHash", function () {
+            $("#txStatus").text("Transaction submitted! Waiting for Ganache confirmation...");
+          });
 
-          getZombiesByOwner(userAccount).then(displayZombies);
-        })
-        .on("error", function (error) {
-
-          $("#txStatus").text(error);
-        });
+        if (receipt.status === false || receipt.status === '0x0') {
+          throw new Error("Transaction reverted");
+        }
+        $("#txStatus").text("Zombie created successfully! Your zombie is displayed below.");
+        const ids = await getZombiesByOwner(userAccount);
+        displayZombies(ids);
+      } catch (error) {
+        console.error("Zombie creation failed:", error);
+        const message = String(error && error.message || error);
+        if (error && error.code === 4001 || /user denied|user rejected|rejected the request/i.test(message)) {
+          $("#txStatus").text("Transaction cancelled in MetaMask. No zombie was created.");
+        } else if (/revert|already known|execution reverted/i.test(message)) {
+          $("#txStatus").text("Zombie creation was rejected. If you already own a zombie, click Show Zombies; otherwise check Ganache and try again.");
+        } else {
+          $("#txStatus").text("Could not create zombie. Check MetaMask, Ganache, and the browser console for details.");
+        }
+      } finally {
+        zombieCreationPending = false;
+        createzombieButton.disabled = false;
+      }
     }
 
     function feedOnKitty(zombieId, kittyId) {
