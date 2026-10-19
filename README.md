@@ -5,7 +5,7 @@ This is a web3 demo project for the CPSC 559 course at California State Universi
   <img width="856" height="829" alt="HTML Page with Zombie Walking" src="https://github.com/user-attachments/assets/35b616a2-27ea-48f1-acbc-d56b40b425a7" />
 </div>
 
-**GitHub Respository:** 
+**GitHub Respository:** https://github.com/LiamDwane/559-blockchain-midterm
 
 ## Team Members
 * **Name:** Liam Dwane | **CWID:** 888470812 | **Email:** lpdwane@csu.fullerton.edu
