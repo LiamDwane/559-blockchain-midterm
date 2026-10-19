@@ -51,7 +51,7 @@ We made it much easier to deploy and run the app by completely automating how th
 ## Instructions for Setup and Running
 *Note: Our DApp setup is a bit different from the starter code because manual ABI copy-pasting is no required*
 
-### Prequisites
+### Prerequisites
 * **Node.js & npm**
 * **Truffle** (to install: `npm install -g truffle`)
 * **Ganache** (Desktop UI app)
