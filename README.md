@@ -19,6 +19,8 @@ We made it much easier to deploy and run the app by completely automating how th
 * We removed the hard-coded contract address. The website now automatically reads the correct address from our generated file.
 * We added `cryptozombies_abi.js` to our `.gitignore` file. Because everyone gets a different local address when they run Ganache on their own computers, this prevents us from accidentally overwriting each other's setups when saving to GitHub.
 * Animated a walk cycle for the zombie in 6 layers for different limbs. Colored the limbs using DNA modulus logic to sample from color palettes controlled by transformed cosine functions and rendered using an html canvas.
+* Added a clearer error message when the user tries to create another zombie
+
 <div align="center">
   <img width="900" height="40" alt="Leg Palette" src="https://github.com/user-attachments/assets/63a0c427-c45b-4290-8ed6-8e7afb976250" />
   <br />
